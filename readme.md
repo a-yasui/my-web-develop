@@ -12,7 +12,7 @@
 
 - Traefikを使用したリバースプロキシー
 - ローカル開発環境でのHTTPルーティング
-- Grafana、Lokiを使用したログ収集と可視化
+- Grafana、Lokiを使用したログ収集と可視化(option)
 - Docker Composeによる簡単なセットアップ
 
 ## 構成
@@ -22,6 +22,11 @@
 ### メインコンポーネント
 
 - **Traefik**: リバースプロキシーサーバ（ポート80、8080）
+
+#### Option
+
+起動してもしなくても、どちらでもという感じ。500 エラー時のログ取得とか通知とかがない、等といった設定が不十分であり、作成中。
+
 - **Grafana**: メトリクスとログの可視化（`grafana.local`でアクセス, user:admin, password: change-me で初期アクセスします）
 - **Loki**: ログ集約システム
 - **Grafana Agent**: コンテナログの収集
@@ -71,11 +76,9 @@ Traefikダッシュボードには以下のURLでアクセスできます：
 
 ※ローカルホストファイルに `127.0.0.1 traefik.local` を追加してください。
 
-### 他のサービスの追加
+### 他のサービスを追加
 
-他のDockerコンテナをTraefikに接続するには、以下のようにラベルを設定します。
-
-そして override する形で保存し、 `docker compsoe -f docker-compose.yml -f docker-compose.override.yml up --build -d` という形で使用します。
+他のDockerコンテナをTraefikに接続するには、既存の `docker-compose.yml` を上書き設定する `docker-compose.overrride.yml` を作成して、以下のようなラベルを設定します。保存の後、 `docker compsoe -f docker-compose.yml -f docker-compose.override.yml up --build -d` という形で起動して使用します。
 
 ```yaml
 services:
