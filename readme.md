@@ -4,7 +4,7 @@
 
 例えば複数の web 開発プロジェクトで、それぞれのサービスを同時に立ち上げる必要がある事があります。その時、80番ポートが衝突する、 `localhost:8018` といった感じでアクセスするが番号忘れた、等があります。
 
-これは、個々のサービスを traefik に接続させる事でそれらの問題を解決する事を主にしています。
+これは、個々のサービスを traefik に接続させる事で、それらの問題を解決する事を主にしています。
 
 ## 概要
 
@@ -40,7 +40,7 @@
 1. リポジトリをクローンします：
 
 ```bash
-git clone <repository-url>
+git clone git@github.com:a-yasui/my-web-develop.git
 cd local-devel-traefik
 ```
 
