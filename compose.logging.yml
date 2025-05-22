@@ -1,0 +1,64 @@
+services:
+  loki:
+    image: grafana/loki:2.9.14
+    container_name: loki
+    volumes:
+      - loki-data:/loki
+      - ./config/loki-config.yml:/etc/loki/local-config.yaml:ro
+    command: -config.file=/etc/loki/local-config.yaml
+    restart: unless-stopped
+    networks:
+      - grafana-net
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    networks:
+      - grafana-net
+      - develop-net
+    volumes: [grafana-data:/var/lib/grafana]
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=change-me
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=develop-net"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.local`)"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grafana.entrypoints=web"
+
+      - "traefik.http.middlewares.grafana-header.headers.customresponseheaders.X-Robots-Tag=none,noarchive,nosnippet,notranslate,noimageindex"
+      - "traefik.http.middlewares.grafana-header.headers.frameDeny=true"
+      - "traefik.http.middlewares.grafana-header.headers.browserXssFilter=true"
+      - "traefik.http.middlewares.grafana-header.headers.accessControlAllowCredentials=true"
+      - "traefik.http.middlewares.grafana-header.headers.accessControlAllowOriginList=http://grafana.local"
+
+      - "traefik.http.routers.grafana.middlewares=grafana-header"
+    depends_on:
+      - loki
+      - agent
+
+  agent:
+    image: grafana/agent:latest
+    container_name: grafana-agent
+    environment:
+      - AGENT_MODE=flow
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - /etc/agent/config.river
+    volumes:
+      - ./config/agent.river:/etc/agent/config.river:ro
+      - /var/run/docker.sock:/var/run/docker.sock   # ← docker 認識用
+    restart: unless-stopped
+    networks:
+      - grafana-net
+
+networks:
+  grafana-net:
+  develop-net:
+    external: true
+
+volumes:
+  loki-data:
+  grafana-data:

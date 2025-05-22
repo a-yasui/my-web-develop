@@ -1,0 +1,43 @@
+services:
+  traefik:
+    image: traefik:v3.3.6
+    container_name: traefik
+    restart: always
+    ports:
+      - "80:80"
+      - "8080:8080"
+    networks:
+      - develop-net
+
+    labels:
+      # casting a spell
+      traefik.enable: true
+      traefik.docker.network: develop-net
+      traefik.http.routers.dashboard.service: api@internal
+      traefik.http.routers.dashboard.rule: Host(`traefik.local`)
+      traefik.http.routers.dashboard.entrypoints: web
+      traefik.http.routers.dashboard.middlewares: dashboard
+
+      traefik.http.middlewares.dashboard.headers.frameDeny: true
+      traefik.http.middlewares.dashboard.headers.browserXssFilter: true
+      traefik.http.middlewares.dashboard.headers.accessControlAllowCredentials: true
+      traefik.http.middlewares.dashboard.headers.accessControlAllowOriginList: "http://traefik.local"
+      traefik.http.middlewares.dashboard.headers.customresponseheaders.X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex,"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/develop.traefik.yml:/etc/traefik/traefik.yml:ro
+      - ./traefik-dynamic:/etc/traefik/dynamic:ro
+      - ./logs:/logs
+      - /var/run/tailscale/tailscaled.sock:/var/run/tailscale/tailscaled.sock
+
+volumes:
+  degg_mysqldata:
+    driver: local
+  degg-minio:
+    driver: local
+  grafana-data:
+
+networks:
+  develop-net:
+    external: true
+

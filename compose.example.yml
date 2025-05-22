@@ -1,0 +1,17 @@
+# 既存アプリケーションをこの Traefik に接続する拡張設定
+# このファイルを compose.traefik.yml という感じの名前にして追加したいプロジェクトに置いて、service name を適切に変えてください。
+services:
+  app:
+    ports:
+      !reset []
+    networks:
+      - develop-net
+    # traefik
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=develop-net
+      - traefik.http.routers.my-example-service.rule=Host(`my-example-service.local`)
+networks:
+  develop-net:
+    external: true
+

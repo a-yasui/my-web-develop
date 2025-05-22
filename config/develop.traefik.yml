@@ -1,0 +1,35 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: false
+
+entryPoints:
+  web:
+    address: :80
+    forwardedHeaders:
+      insecure: true
+      trustedIPs:
+        - "127.0.0.1/32"
+        - "10.0.0.0/8"
+        - "172.16.0.0/12"
+        - "192.168.0.0/16"
+        - "100.64.0.0/10"  # Tailscaleのデフォルト範囲
+  mysql:
+    address: :3306
+api:
+  insecure: true
+  dashboard: true
+
+providers:
+  docker:
+    exposedByDefault: false
+  file:
+    directory: /etc/traefik/dynamic
+    watch: true
+
+log:
+  format: json
+  level: INFO
+
+accessLog:
+  format: json
+  bufferingSize: 50

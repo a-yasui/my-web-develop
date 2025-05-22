@@ -1,0 +1,35 @@
+logging {
+  level = "info"
+}
+
+discovery.docker "local" {
+  host = "unix:///var/run/docker.sock"
+}
+
+/* ① Compose メタラベル → Loki ラベルへ写す */
+discovery.relabel "compose_meta" {
+  targets = []     // 何も変更しない・rules だけ輸出
+
+  rule {                           // com.docker.compose.project → compose_project
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "compose_project"
+  }
+  rule {                           // com.docker.compose.service → service
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "service"
+  }
+}
+
+loki.source.docker "containers" {
+  host          = "unix:///var/run/docker.sock"
+  targets       = discovery.docker.local.targets
+  labels        = { platform = "docker" }              // ← 定数ならここに
+  relabel_rules = discovery.relabel.compose_meta.rules // ← 動的ラベルはここ
+  forward_to    = [loki.write.local.receiver]
+}
+
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
