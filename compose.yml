@@ -14,14 +14,14 @@ services:
       traefik.enable: true
       traefik.docker.network: develop-net
       traefik.http.routers.dashboard.service: api@internal
-      traefik.http.routers.dashboard.rule: Host(`traefik.local`)
+      traefik.http.routers.dashboard.rule: Host(`traefik.localhost`)
       traefik.http.routers.dashboard.entrypoints: web
       traefik.http.routers.dashboard.middlewares: dashboard
 
       traefik.http.middlewares.dashboard.headers.frameDeny: true
       traefik.http.middlewares.dashboard.headers.browserXssFilter: true
       traefik.http.middlewares.dashboard.headers.accessControlAllowCredentials: true
-      traefik.http.middlewares.dashboard.headers.accessControlAllowOriginList: "http://traefik.local"
+      traefik.http.middlewares.dashboard.headers.accessControlAllowOriginList: "http://traefik.localhost"
       traefik.http.middlewares.dashboard.headers.customresponseheaders.X-Robots-Tag: "none,noarchive,nosnippet,notranslate,noimageindex,"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

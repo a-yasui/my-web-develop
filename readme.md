@@ -27,7 +27,7 @@
 
 起動してもしなくても、どちらでもという感じ。500 エラー時のログ取得とか通知とかがない、等といった設定が不十分であり、作成中。
 
-- **Grafana**: メトリクスとログの可視化（`grafana.local`でアクセス, user:admin, password: change-me で初期アクセスします）
+- **Grafana**: メトリクスとログの可視化（`grafana.localhost`でアクセス, user:admin, password: change-me で初期アクセスします）
 - **Loki**: ログ集約システム
 - **Grafana Agent**: コンテナログの収集
 
@@ -72,9 +72,7 @@ docker compose -f compose.yml -f compose.logging.yml up -d
 ### Traefikダッシュボード
 
 Traefikダッシュボードには以下のURLでアクセスできます：
-- http://traefik.local
-
-※ローカルホストファイルに `127.0.0.1 traefik.local` を追加してください。
+- http://traefik.localhost
 
 ### 他のサービスを追加
 
@@ -93,7 +91,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=develop-net"
-      - "traefik.http.routers.<サービス名>.rule=Host(`<ホスト名>.local`)"
+      - "traefik.http.routers.<サービス名>.rule=Host(`<ホスト名>.localhost`)"
       - "traefik.http.services.<サービス名>.loadbalancer.server.port=<コンテナ内ポート>"
       - "traefik.http.routers.<サービス名>.entrypoints=web"
 networks:
@@ -107,7 +105,7 @@ networks:
 labels:
   - "traefik.enable=true"
   - "traefik.docker.network=develop-net"
-  - "traefik.http.routers.grafana.rule=Host(`grafana.local`)"
+  - "traefik.http.routers.grafana.rule=Host(`grafana.localhost`)"
   - "traefik.http.services.grafana.loadbalancer.server.port=3000"
   - "traefik.http.routers.grafana.entrypoints=web"
 ```
@@ -122,8 +120,8 @@ labels:
 
 ### ログの確認
 
-Grafanaダッシュボードには以下のURLでアクセスできます：
-- http://grafana.degg または http://grafana.degg.biz
+docker compose で起動時に `compose.logging.yml` も追加している時、Grafanaダッシュボードには以下のURLでアクセスできます：
+- http://grafana.localhost
 
 初期ログイン情報：
 - ユーザー名: admin

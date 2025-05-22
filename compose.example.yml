@@ -10,7 +10,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.docker.network=develop-net
-      - traefik.http.routers.my-example-service.rule=Host(`my-example-service.local`)
+      - traefik.http.routers.my-example-service.rule=Host(`my-example-service.localhost`)
 networks:
   develop-net:
     external: true
