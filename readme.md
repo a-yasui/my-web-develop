@@ -1,10 +1,10 @@
 # Local Development Traefik
 
-このプロジェクトは、複数のwebサーバのコンテナを扱うためのリバースプロキシーサーバです。[Traefik](https://traefik.io/)を使用して、開発環境でのマイクロサービスへのルーティングを簡単に行えるようにします。
+このプロジェクトは、複数のWebサーバーコンテナを扱うためのリバースプロキシサーバーです。[Traefik](https://traefik.io/)を使用して、開発環境でのマイクロサービスへのルーティングを簡単に行えるようにします。
 
-あたしの身近の web 開発は、ほとんどが docker compose を使ってローカル環境で開発をしています。 そのため複数の web 開発プロジェクトで、それぞれのサービスを同時に立ち上げる必要がある事があります。それぞれが 80 番ポートを使うため、衝突がおきてしまいます。それを回避するための方法として、それぞれ別々のポートにする方法がありますが、どれがどの番号なのか忘れた為に確認しないといけないといった問題があります。
+私の身近なWeb開発では、ほとんどがDocker Composeを使ってローカル環境で開発をしています。そのため複数のWeb開発プロジェクトで、それぞれのサービスを同時に立ち上げる必要があることがあります。それぞれが80番ポートを使うため、衝突が起きてしまいます。それを回避する方法として、それぞれ別々のポートにする方法がありますが、どれがどの番号なのか忘れてしまい、確認が必要になるといった問題があります。
 
-このリポジトリは、個々のサービスを traefik に接続させる事で、 `hoge.localhost` といったドメインでアクセスできるようにして、ポート番号の衝突問題を解決する事を主にしています。
+このリポジトリは、個々のサービスをTraefikに接続させることで、`hoge.localhost`といったドメインでアクセスできるようにして、ポート番号の衝突問題を解決することを主な目的としています。
 
 ## 概要
 
@@ -23,11 +23,11 @@
 
 - **Traefik**: リバースプロキシーサーバ（ポート80、8080）
 
-#### Option
+#### Optional
 
-起動してもしなくても、どちらでもという感じ。500 エラー時のログ取得とか通知とかがない、等といった設定が不十分であり、作成中。
+起動してもしなくても、どちらでも構いません。500エラー時のログ取得や通知などの設定が不十分で、現在作成中です。
 
-- **Grafana**: メトリクスとログの可視化（`grafana.localhost`でアクセス, user:admin, password: change-me で初期アクセスします）
+- **Grafana**: メトリクスとログの可視化（`grafana.localhost`でアクセス、初期ログイン：user=admin, password=change-me）
 - **Loki**: ログ集約システム
 - **Grafana Agent**: コンテナログの収集
 
@@ -76,7 +76,7 @@ Traefikダッシュボードには以下のURLでアクセスできます：
 
 ### 他のサービスを追加
 
-他のDockerコンテナをTraefikに接続するには、既存の `docker-compose.yml` を上書き設定する `docker-compose.overrride.yml` を作成して、以下のようなラベルを設定します。保存の後、 `docker compsoe -f docker-compose.yml -f docker-compose.override.yml up --build -d` という形で起動して使用します。
+他のDockerコンテナをTraefikに接続するには、既存の`docker-compose.yml`を上書き設定する`docker-compose.override.yml`を作成して、以下のようなラベルを設定します。保存後、`docker compose -f docker-compose.yml -f docker-compose.override.yml up --build -d`の形で起動して使用します。
 
 ```yaml
 services:
@@ -120,12 +120,12 @@ labels:
 
 ### ログの確認
 
-docker compose で起動時に `compose.logging.yml` も追加している時、Grafanaダッシュボードには以下のURLでアクセスできます：
+Docker Compose起動時に`compose.logging.yml`も追加している場合、Grafanaダッシュボードには以下のURLでアクセスできます：
 - http://grafana.localhost
 
 初期ログイン情報：
 - ユーザー名: admin
-- パスワード: change-me (compose.logging.ymlで設定)
+- パスワード: change-me（compose.logging.ymlで設定）
 
 ## 設定ファイル
 
